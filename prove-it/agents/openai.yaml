@@ -1,0 +1,4 @@
+interface:
+  display_name: "Prove It"
+  short_description: "Track multidimensional checkpoints without omissions"
+  default_prompt: "Use $prove-it to define and maintain structured multidimensional checkpoints for this task."

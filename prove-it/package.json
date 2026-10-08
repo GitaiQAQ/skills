@@ -1,0 +1,24 @@
+{
+  "name": "@flome/prove-it",
+  "version": "0.0.1",
+  "description": "Structured multidimensional checkpoints for exhaustive agent verification.",
+  "type": "module",
+  "license": "UNLICENSED",
+  "files": [
+    "README.md",
+    "SKILL.md",
+    "agents",
+    "references",
+    "scripts/prove-it.mjs"
+  ],
+  "scripts": {
+    "test": "node tests/skill-contract.test.mjs && node tests/cli.test.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  }
+}

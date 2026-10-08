@@ -1,0 +1,13 @@
+{
+  "name": "@flome/agent-skills",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Agent Skills monorepo: prove-it and hone-it.",
+  "workspaces": [
+    "prove-it",
+    "hone-it"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}

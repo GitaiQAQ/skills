@@ -1,0 +1,25 @@
+{
+  "name": "@flome/hone-it",
+  "version": "0.0.1",
+  "description": "Bounded recursive improvement of a project via agent notes, specs, and skills.",
+  "type": "module",
+  "license": "UNLICENSED",
+  "files": [
+    "README.md",
+    "SKILL.md",
+    "references",
+    "scripts/bootstrap.mjs",
+    "scripts/verify-agent-notes.mjs",
+    "templates"
+  ],
+  "scripts": {
+    "test": "node tests/init.test.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  }
+}
