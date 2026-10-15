@@ -1,0 +1,26 @@
+# 替换占位内容；按需字段见 references/behavior-schema.md。
+# TODO 表示未知，不是已确认事实。首次接入可以保持 pending_decision。
+id: TODO
+status: pending_decision
+owner: TODO
+introduced_in: TODO
+actor: TODO
+intent: TODO
+given:
+  - TODO
+when:
+  - TODO
+then:
+  - TODO
+implementation:
+  - TODO
+driver: TODO
+oracle: TODO
+evidence:
+  result: not_run
+  run_id: TODO
+  minimal_failure: null
+rationale:
+  - TODO
+hidden_scenarios_ref: TODO
+review_log: []

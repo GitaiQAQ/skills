@@ -1,18 +1,48 @@
-# @flome/agent-skills
+# ai-skills
 
-Agent Skills monorepo. Holds two independently versionable skills:
+Agent Skills monorepo. Each subdirectory is one skill and shares the same
+install flow.
 
-- `prove-it/` — multidimensional verification checkpoints. Package `@flome/prove-it`.
-- `hone-it/` — bounded, gated recursive improvement of a project. Package `@flome/hone-it`.
+| Skill | Purpose | npm package |
+| --- | --- | --- |
+| `technical-writing-zh/` | Review and rewrite Chinese technical documents | — |
+| `behavior-as-source/` | Executable, versioned behavior registry as the product source | — |
+| `hone-it/` | Bounded, gated recursive improvement of a project | `@flome/hone-it` |
+| `prove-it/` | Structured multidimensional verification checkpoints | `@flome/prove-it` |
 
-Each subdirectory is a standalone npm package and can be installed into an
-agent's Skills directory independently.
+## Install
+
+Install with the Skills CLI:
+
+```bash
+npx skills add GitaiQAQ/ai-skills -l                     # list the skills in this repo
+npx skills add GitaiQAQ/ai-skills -g -y                  # install all, user-level
+npx skills add GitaiQAQ/ai-skills --skill hone-it -g -y  # install one skill
+npx skills update -g                                     # update installed skills later
+```
+
+Drop `-g` to install into the current project instead of `~/.agents/skills`.
 
 ## Development
+
+Skills are linked into the user-level directory, so edits apply immediately:
+
+```bash
+ln -s "$PWD/hone-it" ~/.agents/skills/hone-it
+```
 
 ```bash
 pnpm install
 pnpm test
 ```
 
-Test runs each workspace's own test script.
+`pnpm test` runs the test script of each workspace package.
+
+## Adding a skill
+
+1. Create `<name>/SKILL.md` with `name` and `description` frontmatter.
+2. Link it into the user-level directory: `ln -s "$PWD/<name>" ~/.agents/skills/<name>`.
+3. Verify discovery: `npx skills add . -l`.
+
+Discovery searches subdirectories recursively, so the skill directory name does
+not need to match any fixed layout.
