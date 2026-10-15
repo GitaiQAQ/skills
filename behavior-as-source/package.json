@@ -1,0 +1,50 @@
+{
+  "name": "@flome/behavior-as-source",
+  "version": "0.0.1",
+  "description": "Versioned Markdown and Gherkin behavior registry Skill and CLI.",
+  "type": "module",
+  "license": "UNLICENSED",
+  "bin": {
+    "behavior-lint": "scripts/behavior-lint.mjs",
+    "behavior-diff": "scripts/behavior-diff.mjs",
+    "behavior-impact": "scripts/behavior-impact.mjs",
+    "behavior-list": "scripts/behavior-list.mjs",
+    "behavior-locate": "scripts/behavior-locate.mjs"
+  },
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "files": [
+    "README.md",
+    "SKILL.md",
+    "agents",
+    "references",
+    "schemas",
+    "scripts",
+    "src",
+    "templates"
+  ],
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "behavior-lint": "node scripts/behavior-lint.mjs",
+    "behavior-diff": "node scripts/behavior-diff.mjs",
+    "behavior-impact": "node scripts/behavior-impact.mjs",
+    "behavior-list": "node scripts/behavior-list.mjs",
+    "behavior-locate": "node scripts/behavior-locate.mjs"
+  },
+  "dependencies": {
+    "@cucumber/gherkin": "42.0.1",
+    "@cucumber/messages": "34.2.1",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
+    "fast-glob": "3.3.3",
+    "gray-matter": "4.0.3"
+  },
+  "engines": {
+    "node": ">=18.18"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  }
+}

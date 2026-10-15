@@ -1,69 +1,95 @@
 ---
 name: behavior-as-source
-description: 在现有项目中落地可执行、可版本化的行为事实源。用于首次建立小范围 Behavior Registry，以及从需求、代码变更或事故中新增、修改、废弃和验证行为，并按需生成产品说明与版本说明。不用于单纯文档润色或一般代码质量审查。
+description: 在现有项目中维护可执行、可版本化的 Markdown + Gherkin 行为事实源。用于首次建立 Behavior Registry，从需求、代码变更或事故中新增、修改、废弃和验证行为，运行 behavior-lint/diff/impact/list/locate，并按需生成版本说明。不用于一般文档润色、代码质量审查或运行 Cucumber 测试。
 ---
 
 # Behavior as Source
 
-对可观察、可验证的产品规则，维护一个有 Owner、版本和证据的语义来源。实现、测试和说明引用同一行为版本；市场判断和必要架构理由保留独立决策记录。
+对可观察的产品规则维护一个带 Owner、版本、实现和证据的 `*.behavior.md` 条目。实现、测试、评审和 Release Notes 使用同一个稳定 Behavior ID。
 
-## 选择入口
+## 开始前
 
-- **首次接入项目，或已有目录但尚未形成运行链路：** 读取 [project-adoption.md](references/project-adoption.md)，先完成一个模块的最小试点。
-- **已有 Registry 的日常变更：** 按下面的变更流程工作，复用项目已有位置和约定。
-- **解释方向、评审技术方案或判断适用性：** 读取 [background-and-design.md](references/background-and-design.md)，保留正反论证和可推翻条件，不把设计假设写成已实现能力。
-- **评估是否扩大试点：** 读取 [pilot-metrics.md](references/pilot-metrics.md)，比较已有基线，不因生成数量增加而扩张。
+先阅读目标项目的指令、相关实现、现有测试和需求来源。说明目标、非目标、验收标准和保持不变的内容。所有条目路径都相对目标项目根目录。
 
-## 共用边界
+字段与结构以 [JSON Schema](schemas/behavior.schema.json) 为唯一机器契约。字段说明见 [behavior-schema.md](references/behavior-schema.md)，命令说明见 [tooling.md](references/tooling.md)。
 
-先阅读目标项目的指令、相关实现和现有测试，说明本次目标、非目标、验收标准和保持不变的内容。路径相对目标项目根目录，不能把产物写入本技能目录。
+Owner 必须来自用户或项目授权记录。Owner 未确认时使用 `owner: TODO` 和 `status: pending_decision`。AI 不得自任 Owner，也不得把历史实现自动认定为正确需求。
 
-复用现有测试框架、版本库和证据存储。Driver 可以是现有测试命令，Oracle 可以是现有断言；不要求新增同名组件。只创建当前任务会使用的文件，不迁移全部历史需求，不预建平台或 CI 层。
+本 Skill 不接 Cucumber Runner，不写 step definition，不支持一文件多 Behavior，也不提供 Skill 更新 CLI。升级使用普通版本管理或 Skill 安装流程。
 
-Owner 必须来自用户或项目中明确的授权记录。缺失时写 `TODO`，继续提取和准备，在需要语义裁决时提出一个包含上下文的具体问题。AI 不得自任 Owner，不得把历史实现自动认定为正确需求。
+## 工作流
 
-## 变更流程
+### 1. 查找现有行为
 
-### 1. 找到行为与来源
+先运行：
 
-读取 [behavior-schema.md](references/behavior-schema.md)。从需求、评审、Diff、事故或反馈提取 Actor、Given / When / Then 和引入理由，记录可定位来源。检索已有条目，确定新增、修改、废弃或对齐；没有可观察结果的判断保留在必要决策记录中。
+```bash
+npx --no-install behavior-list <project-root>
+npx --no-install behavior-locate <behavior-id> <project-root>
+```
 
-语义冲突时标为 `conflict`，记录双方来源、冲突 ID 和待决问题，由 Owner 裁决。信息不足时使用 `pending_decision`，不得补造默认规则。
+从 PRD、迁移文档、Diff、事故或反馈提取 Actor、Intent、Given、When、Then 和可定位来源。确定本次是新增、修改、废弃还是冲突。信息不足时使用 `pending_decision`；语义冲突时使用 `conflict` 和 `conflicts_with`，等待 Owner 裁决。
 
-### 2. 保存最小行为版本
+### 2. 编写条目
 
-使用 [behavior.yaml](templates/behavior.yaml)，遵循项目已有目录约定。没有约定时采用接入指引中的默认位置。
+复制 [behavior.md](templates/behavior.md)，在负责该行为的主实现旁创建人读短名的 `<name>.behavior.md`。一个文件只保存一个 Behavior，并且必须包含：
 
-稳定 `id` 使用 `域.对象.动作`；同一行为修改不换 ID。用项目现有版本历史保存语义变更，记录引入、修改或退出的版本，不要求额外执行 Git 提交。不得覆盖生效历史后使旧实现和证据失去解释。
+- YAML frontmatter，`id` 是第一个 key；
+- 一个一级标题；
+- 恰好一个 `gherkin` fenced block；
+- block 内恰好一个 `Scenario` 或 `Scenario Outline`；
+- 可选的 `## Rationale` 和 `## Notes`。
 
-必填字段与按需字段以字段定义为准。未执行证据必须明确标为 `not_run`，`TODO` 不能作为确认或运行成功的证据。
+跨目录实现继续完整列入 `implementation`，不要复制 Behavior 文件。语义修改保留 ID，并填写 `changed_in`。
 
-### 3. 关联实现与验证
+### 3. 校验 Registry
 
-将条目映射到实际实现、现有测试、执行命令和判断规则。先运行相关现有测试；若不足以验证当前需求，才添加必要测试。遵循目标项目的测试限制，不增加无关覆盖或新框架。
+从目标项目根目录运行：
 
-行为变更需要哪些派生物，就更新哪些。文档任务不自动扩大为实现任务；未授权修改实现时，交付条目、影响面和待执行步骤，并保留未验证状态。
+```bash
+npx --no-install behavior-lint .
+```
 
-### 4. 执行并记录证据
+error 阻塞变更，warning 默认不阻塞。不要通过放宽 Schema、增加 ignore 或修改测试断言来掩盖真实问题。
 
-固定行为版本、实现版本、验证版本和必要输入，执行 Driver，由 Oracle 判断。证据记录实际命令、环境、结果和可追溯输出。失败、未运行和输出无法保存时不得报成功；本地执行没有平台 Run ID 时，可引用实际保存的本地运行记录，不能编造 ID。
+### 4. 关联并运行证据
 
-失败时先区分实现错误、Oracle 错误、行为语义错误和环境阻塞。保存最小反例；不要修改断言或输入来迎合实现。环境未满足时继续可完成的准备，不把待执行检查写成通过。
+填写真实的 `implementation`、`driver` 和 `oracle`。Driver 复用项目现有测试命令，不创建 BDD Runner。先运行相关现有测试；只有当前行为无法被现有测试证明时，才按项目测试规则添加最小测试。
 
-### 5. 确认生效并按需派生
+把运行记录保存在项目已有证据目录。`evidence.run_id` 使用仓库相对文件路径。未运行时写：
 
-只有 Owner 显式确认、Driver / Oracle 可独立执行且通过、隐藏场景与公开场景不同源、没有生效行为冲突时，才标为 `active`。独立验证由不同于实现者的维护者控制，条目只存引用；本技能不能通过复制公开 Example 自称完成独立验证。未满足条件时保留待决策或冲突状态，并明确缺口。
+```yaml
+evidence:
+  result: not_run
+  run_id: TODO
+  minimal_failure: null
+```
 
-由确定行为版本生成需要的用户说明或版本说明，核对可理解性与公开范围。版本差异必须包含新增、修改和废弃，不能只比较当前 `active` 集合。`active` 表示契约生效，不等于所有线上环境已部署或正确。
+失败和阻塞必须保留真实状态，不能编造成功证据。
 
-### 6. 失败回流与恢复
+### 5. 晋级或废弃
 
-经确认的事故或人工纠正，形成当前行为的修订、必要反例或废弃记录。若生效语义错误，保留历史，把当前条目标为 `pending_decision`，停止更新或发布依赖该错误版本的派生说明，再由 Owner 决定纠正。原始证据保留。
+只有同时满足以下条件，才把条目标为 `active`：
 
-行为版本恢复与部署回滚分别处理；部署动作沿用项目发布流程和授权。纠正后运行相关回归，记录新证据，不覆盖旧结果。
+- Owner 已确认且不为 `TODO`；
+- `implementation` 至少包含一个真实路径；
+- `evidence.result` 为 `passed`；
+- `evidence.run_id` 指向现存证据文件；
+- `hidden_scenarios_ref` 已建立且不为 `TODO`；
+- 没有生效冲突。
 
-## 交付与停止条件
+废弃时保留文件，设置 `status: deprecated`、`deprecated_in` 和理由。不得直接删除历史 Behavior。
 
-交付实际修改的路径、对应 Behavior ID、已执行检查、未执行项及原因、待 Owner 决定的问题。首次接入以首个小范围试点为完成边界；允许“接入已完成，行为尚未晋级”。不能把技能结构校验或条目格式检查当成业务验证。
+### 6. 查看影响和版本差异
 
-如果 Registry 长期落后于代码、Owner 无法持续确认、筛查成本高于原流程，或同一业务规则重新在外部独立维护，停止扩张，按试点指标决定缩小或退出。
+```bash
+npx --no-install behavior-impact --path <source-file> --root <project-root>
+npx --no-install behavior-impact --id <behavior-id> --root <project-root>
+npx --no-install behavior-diff <refA> <refB> --root <project-root>
+```
+
+版本差异必须包含新增、修改和废弃。直接删除 Behavior 会报告错误，不能冒充废弃。
+
+## 交付
+
+交付实际修改的路径、Behavior ID、已执行检查、未执行项及原因，以及待 Owner 决定的问题。格式 lint 只证明 Registry 契约有效，不能代替业务 Driver 与 Oracle。

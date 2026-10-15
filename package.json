@@ -4,6 +4,7 @@
   "private": true,
   "description": "Personal Agent Skills monorepo.",
   "workspaces": [
+    "behavior-as-source",
     "technical-writing-zh",
     "prove-it",
     "hone-it"

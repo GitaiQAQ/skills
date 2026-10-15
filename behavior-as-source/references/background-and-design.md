@@ -1,6 +1,6 @@
 # Behavior as Source：背景与技术方案
 
-本文是 `behavior-as-source` 技能的唯一背景与技术方案正文，面向产品、研发、测试和行为 Owner。它说明为什么采用行为事实源、如何执行，以及何时停止试点。技能操作入口仍为 [SKILL.md](SKILL.md)。
+本文是 `behavior-as-source` 技能的唯一背景与技术方案正文，面向产品、研发、测试和行为 Owner。它说明为什么采用行为事实源、如何执行，以及何时停止试点。技能操作入口仍为 [SKILL.md](../SKILL.md)。
 
 **方案状态：待验证的工程假设。** 当前目录提供技能说明、字段定义、模板和试点指标，不代表已经实现 Registry 服务、自动生成器、执行平台或发布系统。本文描述目标流程，不宣称已有端到端运行结果。
 
@@ -217,12 +217,12 @@ Property、独立隐藏验证和线上反馈能提供额外证据，但也需要
 
 ### 6.2 数据契约与唯一维护位置
 
-[字段定义](references/behavior-schema.md) 是字段和枚举的维护位置，[行为模板](templates/behavior.yaml) 是创建条目的起点。本文解释用途，不另建一套 Schema。
+[JSON Schema](../schemas/behavior.schema.json) 是字段和枚举的机器契约，[字段说明](behavior-schema.md) 解释使用边界，[行为模板](../templates/behavior.md) 是创建条目的起点。本文解释用途，不另建一套 Schema。
 
-字段分为四组：
+frontmatter 字段分为四组：
 
 - 身份与生命周期：`id`、`owner`、`status`、引入、修改和废弃版本；
-- 行为内容：`actor`、`intent`、`given`、`when`、`then`、错误、副作用、不变量和质量要求；
+- 行为内容：`actor`、`intent`，以及正文中的 Gherkin Scenario；
 - 追踪：实现位置、Driver、Oracle、Evidence 和引入理由；
 - 审计：隐藏评测引用、Owner 审查记录和冲突条目引用。
 
@@ -308,7 +308,7 @@ Owner 未确认，或 Driver、Oracle、Evidence 仍为 `TODO` 时，该条目�
 
 试点开始前，Owner 应确定比较范围、观察窗口、数据来源和“明显下降”“少量编辑”“快速恢复”的判定方式。原文没有给出统一数值阈值，本文不补造。
 
-[试点指标与晋级门槛](references/pilot-metrics.md) 维护具体指标。主要检查四个维度：
+[试点指标与晋级门槛](pilot-metrics.md) 维护具体指标。主要检查四个维度：
 
 - **同步成本：** 独立事实源数量、规则重复、不一致数量、人工同步时间；
 - **行为质量：** P0 / P1 遗漏、隐藏场景退化、错误 Oracle、重复行为、待决策停留时间；
@@ -337,16 +337,241 @@ Owner 未确认，或 Driver、Oracle、Evidence 仍为 `TODO` 时，该条目�
 
 ## 9. 当前技能材料的分工
 
-- [SKILL.md](SKILL.md)：操作入口、执行顺序和不可改变的约束。
+- [SKILL.md](../SKILL.md)：操作入口、执行顺序和不可改变的约束。
 - 本文：唯一背景、论证、技术流程和适用边界。
-- [字段定义](references/behavior-schema.md)：字段与状态枚举。
-- [行为模板](templates/behavior.yaml)：创建条目的起点。
-- [项目接入指引](references/project-adoption.md)：在其他项目中完成首次最小试点。
-- [试点指标](references/pilot-metrics.md)：指标与扩大试点条件。
+- [JSON Schema](../schemas/behavior.schema.json)：字段、类型与状态枚举的机器契约。
+- [字段说明](behavior-schema.md)：字段用途与使用边界。
+- [行为模板](../templates/behavior.md)：创建条目的起点。
+- [项目接入指引](project-adoption.md)：在其他项目中完成首次最小试点。
+- [试点指标](pilot-metrics.md)：指标与扩大试点条件。
+- [CLI 文档](../README.md)：安装方式、命令、参数和输出示例。
 
-`archive/` 保存本次合并前的原文，只用于追溯，不再作为当前方案依据。`references/brief.md` 和 `references/full-argument.md` 仅保留导航，避免旧引用失效，不维护另一份正文。
+旧 YAML 模板和合并前的导航文档只保留在 Git 历史中，不作为当前事实源。
 
-## 10. 参考资料
+## 10. v2 实现与后续 rollout
+
+### 10.1 目标和范围
+
+v2 已在当前 `ai-skills` monorepo 内实现。`behavior-as-source/` 同时是 Skill 源码目录和 npm workspace package，不在业务仓库内另建工具 package。
+
+当前 package 已交付以下内容：
+
+- 将 Behavior 文件从 YAML 改为 `*.behavior.md`；
+- 用 YAML frontmatter 保存元数据，用一个 Gherkin block 保存行为；
+- 提供 `behavior-lint`、`behavior-diff`、`behavior-impact`、`behavior-list` 和 `behavior-locate`；
+- 更新当前 Skill、字段说明和模板；
+- 用当前仓库的测试方式验证 Schema、解析和 CLI。
+
+本阶段不修改 `ad_vertical_frontends` 或其他消费仓库，不迁移其中的 19 条 Behavior，也不接入其 CI。消费仓库迁移是独立 rollout，需要单独确认范围。它用于验证 v2 能否落地，不是当前 package 的实现位置。
+
+以下事项继续排除：Cucumber Runner、step definition、共享 defaults、Living Doc HTML、embedding 漂移检测、跨语言绑定、常驻服务和 Skill 自更新 CLI。
+
+### 10.2 当前仓库事实和实现选择
+
+当前 checkout 已确认以下事实：
+
+| 项目事实 | v2 选择 |
+| --- | --- |
+| 根目录使用 npm workspaces | 将 `behavior-as-source` 加入根 `workspaces` |
+| workspace scope 为 `@flome` | package 名为 `@flome/behavior-as-source` |
+| `prove-it` 和 `hone-it` 直接发布 ESM `.mjs` | CLI 和共享模块使用 ESM `.mjs` |
+| 现有测试使用 `node`、`node:assert` 和临时目录 | 使用 `node:test` 或同等的 Node 内置测试，不引入测试框架 |
+| 当前 package 没有编译步骤 | bin 直接指向 `scripts/*.mjs`，不增加 TypeScript 构建链 |
+| 当前仓库没有 CI 配置 | 先提供稳定的 `npm test` 和 CLI 命令，不凭空新增 CI 平台配置 |
+
+交接稿中的 `packages/behavior-as-source/`、`pnpm`、Rstest 和业务仓库 CI 命令不适用于当前仓库。它们只在消费仓库 rollout 时按该仓库事实重新确定。
+
+运行时依赖固定为 `gray-matter`、`@cucumber/gherkin`、`@cucumber/messages`、`ajv`、`ajv-formats` 和 `fast-glob`。依赖通过当前 workspace 的 npm 命令安装，不手改 lockfile。
+
+### 10.3 目标目录
+
+```text
+behavior-as-source/
+  package.json
+  README.md
+  SKILL.md
+  schemas/
+    behavior.schema.json
+  src/
+    parse.mjs
+    schema.mjs
+    lint.mjs
+    diff.mjs
+    impact.mjs
+    registry.mjs
+    types.mjs
+  scripts/
+    behavior-lint.mjs
+    behavior-diff.mjs
+    behavior-impact.mjs
+    behavior-list.mjs
+    behavior-locate.mjs
+  tests/
+    fixtures/
+    parse-lint.test.mjs
+    diff.test.mjs
+  references/
+    background-and-design.md
+    behavior-schema.md
+    project-adoption.md
+    pilot-metrics.md
+    tooling.md
+  templates/
+    behavior.md
+```
+
+`README.md` 只记录 package 安装方式、五个命令、参数、退出码和代表性输出。Skill 工作流只写在 `SKILL.md`。`references/tooling.md` 只链接 `README.md`，不复制命令说明。
+
+### 10.4 事实源
+
+| 内容 | 唯一维护位置 |
+| --- | --- |
+| frontmatter 字段、类型、枚举和必填性 | `schemas/behavior.schema.json` |
+| Agent 的操作顺序和晋级规则 | `SKILL.md` |
+| 空白条目结构 | `templates/behavior.md` |
+| CLI 参数和输出 | `README.md` |
+| 产品背景、反方论证和本实施计划 | `references/background-and-design.md` |
+| 消费项目的产品理由、证据和 Behavior | 消费项目自己的版本库 |
+
+`references/behavior-schema.md` 只解释字段用途并链接 JSON Schema。它不得复制完整字段表。当前背景文档是本产品的设计记录；消费项目 checked-in Skill 不复制本文，项目自己的采用理由放在项目文档中。
+
+### 10.5 第一阶段：冻结文件契约
+
+唯一合法文件以 `.behavior.md` 结尾，并包含：
+
+1. YAML frontmatter，`id` 是第一个 key；
+2. 一个一级标题；
+3. 恰好一个标记为 `gherkin` 的 fenced block；
+4. block 内恰好一个 `Scenario` 或 `Scenario Outline`；
+5. 可选的 `## Rationale` 和 `## Notes`。
+
+Schema 负责字段类型、必填字段、枚举和 `additionalProperties`。lint 负责顺序、文件存在、Gherkin 语法、跨文件唯一性和状态门禁。两者不得重复实现同一规则。
+
+必填字段为 `id`、`status`、`owner`、`introduced_in`、`actor`、`intent`、`implementation`、`driver`、`oracle`、`evidence`、`hidden_scenarios_ref` 和 `review_log`。按需字段只有 `changed_in`、`deprecated_in`、`conflicts_with` 和 `rationale`。
+
+`status` 只允许 `hypothesis`、`pending_decision`、`active`、`deprecated` 和 `conflict`。`evidence` 固定包含 `result`、`run_id` 和 `minimal_failure`；`result` 只允许 `not_run`、`passed`、`failed` 和 `blocked`。
+
+编码前冻结以下细节：
+
+- `implementation` 是路径数组。`pending_decision` 可以使用空数组；`active` 至少有一个真实路径；
+- `oracle` 是非空字符串数组；
+- `changed_in` 和 `deprecated_in` 是字符串；
+- `conflicts_with` 是 Behavior ID 数组；
+- frontmatter 中的 `rationale` 是字符串；复杂说明写入 `## Rationale`；
+- `review_log` 必须是数组，空数组合法。v2 首版不虚构尚无真实样本的审查记录字段；
+- `evidence.run_id` 是仓库相对证据文件路径。`passed` 时该文件必须存在。
+
+Schema 完成前先用一个合法样本和一个非法样本核对这些决定。字段仍有分歧时停止编码，只确认会改变 Schema 的问题。
+
+### 10.6 第二阶段：实现解析和 lint
+
+解析只保留一个内核：
+
+1. `parseBehaviorSource(path, source, root)` 解析字符串；
+2. `parseBehaviorFile(path, root)` 读取文件后调用内核；
+3. `parseBehaviorDir(root)` 用 `fast-glob` 查找 `**/*.behavior.md`。
+
+`gray-matter` 解析 frontmatter。解析器从 Markdown 中提取 Gherkin block，前置 `Feature: <id>` 后交给 `@cucumber/gherkin`。解析结果保留 frontmatter、正文、一级标题、Gherkin AST 和 step 列表，供所有 CLI 复用。
+
+package 导出 `parseBehaviorSource`、`parseBehaviorFile`、`parseBehaviorDir`、`lintBehavior` 和 `lintBehaviorRegistry`。ESM 源码使用 JSDoc 固定 `BehaviorMeta`、`BehaviorFile` 和 `LintIssue` 的对象形状，不为类型声明增加编译步骤。
+
+`behavior-lint` 先实现以下 error：
+
+- `schema`；
+- `gherkin-parse`、`gherkin-count` 和 `scenario-count`；
+- `id-position` 和 `id-unique`；
+- `implementation-exists`；
+- `active-gate`；
+- `evidence-consistency`。
+
+第一版 warning 只有 `vague-filename` 和 `missing-rationale`。warning 默认输出但不改变退出码；`--no-warnings` 只隐藏 warning，不引入配置文件。
+
+`active-gate` 要求 owner 非 `TODO`、`implementation` 非空、`evidence.result` 为 `passed`、`evidence.run_id` 指向现存文件，并且 `hidden_scenarios_ref` 非 `TODO`。`evidence-consistency` 要求任何 `passed` 结果都能定位证据文件。`vague-filename` 的黑名单固定为 `test`、`a`、`new`、`tmp`、`xxx` 和 `foo`。
+
+### 10.7 第三阶段：实现五个 CLI
+
+五个命令共用参数解析、Registry 扫描、JSON 输出和错误处理。退出码固定为：成功 `0`，发现条目或目标问题 `1`，使用错误 `2`。
+
+| 命令 | 主要输入和输出 |
+| --- | --- |
+| `behavior-lint [root] [--json] [--no-warnings]` | 扫描 Registry 并输出结构化问题 |
+| `behavior-diff <refA> <refB> [--root <path>] [--format markdown\|json]` | 输出新增、修改、废弃和非法删除 |
+| `behavior-impact (--path <src-file> \| --id <behavior-id>) [--root <path>]` | 输出实现路径与 Behavior 的双向关系 |
+| `behavior-list [root] [--status <s>] [--owner <o>] [--format table\|json]` | 按 ID 输出状态、Owner、路径和标题 |
+| `behavior-locate <behavior-id> [root]` | 输出唯一匹配文件的绝对路径 |
+
+`behavior-diff` 按 ID 区分新增、修改、废弃和非法删除。frontmatter 只比较产品指定的关键字段；Gherkin 使用 AST 中的 keyword 和 text 比较。Markdown 空白和普通 prose 调整不进入行为差异。
+
+`behavior-impact --path` 先检查源文件同目录和父目录，再扫描 Registry 中尚未处理的文件并去重。局部命中不能提前返回。`behavior-locate`、`behavior-impact --id` 和 `behavior-diff` 遇到重复 ID 时返回问题，不任意选择一条。
+
+所有命令支持 `--json`。已有 `--format json` 的命令将它视为同一输出模式，不建立两套 JSON 结构。
+
+### 10.8 第四阶段：更新 Skill
+
+工具契约稳定后再更新 Skill：
+
+- `SKILL.md` 改为提取、编写、lint、证据、晋级、变更和 Release Notes 流程；
+- `templates/behavior.md` 替代 `templates/behavior.yaml`；
+- `references/behavior-schema.md` 改为人读说明和 Schema 链接；
+- `references/project-adoption.md` 改为就近存放 `*.behavior.md`；
+- 新增 `references/tooling.md`；
+- `brief.md` 和 `full-argument.md` 若只承担旧导航，则删除，由 Git 历史追溯。
+
+`references/background-and-design.md` 保留在当前源码仓库，因为它是本产品的设计和实施计划。运行时 `SKILL.md` 不要求为日常任务读取本文。消费项目只 checked-in 操作所需的 Skill 文件，不复制本产品背景。
+
+### 10.9 第五阶段：最小测试和本仓验收
+
+测试只证明当前产品契约：
+
+- 合法条目；
+- 缺字段；
+- 多个 Gherkin block；
+- 多个 Scenario；
+- 重复 ID；
+- `active` 门禁；
+- 模糊文件名；
+- diff 的一条 step 修改和非法删除。
+
+测试使用临时目录，不扫描真实业务仓库。现有测试能证明行为时不增加参数化矩阵、快照或端到端套件。
+
+CLI smoke test 分别验证退出码 `0`、`1` 和 `2`。这是命令契约的一部分，不扩展为端到端测试套件。
+
+本仓完成条件：
+
+- 根 `workspaces` 包含 `behavior-as-source`；
+- `npm test --workspace @flome/behavior-as-source` 通过；
+- 五个 bin 可从 workspace 执行；
+- fixture lint 为 0 error；
+- JSON Schema 是唯一机器契约；
+- Skill、模板和 CLI 文档都描述 Markdown + Gherkin；
+- 最终 diff 不包含其他 Skill、业务仓库或无关配置的修改。
+
+### 10.10 消费仓库 rollout
+
+本仓验收后，才能为一个消费仓库创建独立迁移任务。以 Pangle 的 19 条 YAML 为例，rollout 需要：
+
+1. 读取消费仓库的 package、测试、CI、Skill 安装和目录约定；
+2. 确定如何依赖 `@flome/behavior-as-source`，不复制 CLI 源码；
+3. 建立旧文件、ID、新文件、实现路径和证据路径清单；
+4. 先迁移一条有真实证据的样本，再机械迁移其余条目；
+5. 比较迁移前后 ID 集合，确认没有新增或静默删除；
+6. 更新消费项目自己的 adoption、evidence、migration index 和 CI；
+7. 运行消费项目现有测试和全量 Behavior lint。
+
+rollout 不修改生产代码或现有测试断言。具体 package manager、命令和 CI job 由消费仓库决定。当前文档不再预设 `pnpm`、EMO、Rstest 或目录名称。
+
+### 10.11 预算与停止条件
+
+预计工作量分为两部分：当前 package 和 Skill 约 2.5 至 3 个工程日；首个消费仓库的 19 条迁移和 CI 约 1.5 至 2 个工程日。总量仍约 4.5 个工程日，但两个任务必须分别验收。
+
+出现以下情况时停止并确认：
+
+- 当前 npm workspace 无法满足依赖或 bin 执行；
+- Schema 与 Skill 对同一字段给出不同要求；
+- CLI 需要修改消费仓库生产代码才能工作；
+- rollout 无法证明 19 个 ID 一一对应。
+
+## 11. 参考资料
 
 以下资料继承自原文，供后续核验和阅读。本次仅合并本地文档，未逐项核验链接、标题、研究数据或当前产品能力。它们不构成完整方案已经成立的证据。
 

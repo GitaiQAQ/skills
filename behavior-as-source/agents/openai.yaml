@@ -1,0 +1,4 @@
+interface:
+  display_name: "Behavior as Source"
+  short_description: "维护可版本化的产品行为事实源"
+  default_prompt: "Use $behavior-as-source to add or update a versioned behavior and verify it with existing project evidence."

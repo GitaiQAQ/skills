@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://flome.dev/schemas/behavior-as-source/v2.json",
+  "title": "Behavior as Source v2 frontmatter",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "status",
+    "owner",
+    "introduced_in",
+    "actor",
+    "intent",
+    "implementation",
+    "driver",
+    "oracle",
+    "evidence",
+    "hidden_scenarios_ref",
+    "review_log"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$"
+    },
+    "status": {
+      "enum": ["hypothesis", "pending_decision", "active", "deprecated", "conflict"]
+    },
+    "owner": { "type": "string", "minLength": 1 },
+    "introduced_in": { "type": "string", "minLength": 1 },
+    "changed_in": { "type": "string", "minLength": 1 },
+    "deprecated_in": { "type": "string", "minLength": 1 },
+    "actor": { "type": "string", "minLength": 1 },
+    "intent": { "type": "string", "minLength": 1 },
+    "implementation": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "driver": { "type": "string", "minLength": 1 },
+    "oracle": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["result", "run_id", "minimal_failure"],
+      "properties": {
+        "result": { "enum": ["not_run", "passed", "failed", "blocked"] },
+        "run_id": { "type": "string", "minLength": 1 },
+        "minimal_failure": { "type": ["string", "null"] }
+      }
+    },
+    "hidden_scenarios_ref": { "type": "string", "minLength": 1 },
+    "review_log": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "conflicts_with": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$"
+      },
+      "uniqueItems": true
+    },
+    "rationale": { "type": "string", "minLength": 1 }
+  }
+}

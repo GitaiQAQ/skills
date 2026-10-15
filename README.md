@@ -6,7 +6,7 @@ install flow.
 | Skill | Purpose | npm package |
 | --- | --- | --- |
 | `technical-writing-zh/` | Review and rewrite Chinese technical documents | — |
-| `behavior-as-source/` | Executable, versioned behavior registry as the product source | — |
+| `behavior-as-source/` | Executable, versioned behavior registry as the product source | `@flome/behavior-as-source` |
 | `hone-it/` | Bounded, gated recursive improvement of a project | `@flome/hone-it` |
 | `prove-it/` | Structured multidimensional verification checkpoints | `@flome/prove-it` |
 
@@ -32,11 +32,11 @@ ln -s "$PWD/hone-it" ~/.agents/skills/hone-it
 ```
 
 ```bash
-pnpm install
-pnpm test
+npm install
+npm test --workspaces --if-present
 ```
 
-`pnpm test` runs the test script of each workspace package.
+`npm test --workspaces --if-present` runs the test script of each workspace package.
 
 ## Adding a skill
 
