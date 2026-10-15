@@ -4,6 +4,7 @@
   "private": true,
   "description": "Personal Agent Skills monorepo.",
   "workspaces": [
+    "technical-writing-zh",
     "prove-it",
     "hone-it"
   ],

@@ -8,7 +8,7 @@
 
 ## 当前目录
 
-当前目录包含 `SKILL.md` 和 `references/` 下的 4 份参考文档，没有现成的 `evals/` 目录、case schema 或 grader。本文是本次唯一新增文件；不修改现有 Skill 和参考资料。
+初始检查时，目录包含 `SKILL.md` 和 `references/` 下的 4 份参考文档；最终核对时，目录还包含未跟踪的 `evals/evals.json`、`evals/trigger-evals.json`、`package.json` 和 `scripts/prepare-evals.mjs`。这些文件不是本文修改范围。本文是本次唯一写入文件；不修改现有 Skill、参考资料或已有 eval 文件。
 
 ## 结论摘要
 
