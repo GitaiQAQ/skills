@@ -15,9 +15,9 @@ install flow.
 Install with the Skills CLI:
 
 ```bash
-npx skills add GitaiQAQ/ai-skills -l                     # list the skills in this repo
-npx skills add GitaiQAQ/ai-skills -g -y                  # install all, user-level
-npx skills add GitaiQAQ/ai-skills --skill hone-it -g -y  # install one skill
+npx skills add GitaiQAQ/skills -l                     # list the skills in this repo
+npx skills add GitaiQAQ/skills -g -y                  # install all, user-level
+npx skills add GitaiQAQ/skills --skill hone-it -g -y  # install one skill
 npx skills update -g                                     # update installed skills later
 ```
 
