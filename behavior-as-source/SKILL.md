@@ -11,7 +11,7 @@ description: 在现有项目中落地可执行、可版本化的行为事实源�
 
 - **首次接入项目，或已有目录但尚未形成运行链路：** 读取 [project-adoption.md](references/project-adoption.md)，先完成一个模块的最小试点。
 - **已有 Registry 的日常变更：** 按下面的变更流程工作，复用项目已有位置和约定。
-- **解释方向、评审技术方案或判断适用性：** 读取 [background-and-design.md](background-and-design.md)，保留正反论证和可推翻条件，不把设计假设写成已实现能力。
+- **解释方向、评审技术方案或判断适用性：** 读取 [background-and-design.md](references/background-and-design.md)，保留正反论证和可推翻条件，不把设计假设写成已实现能力。
 - **评估是否扩大试点：** 读取 [pilot-metrics.md](references/pilot-metrics.md)，比较已有基线，不因生成数量增加而扩张。
 
 ## 共用边界

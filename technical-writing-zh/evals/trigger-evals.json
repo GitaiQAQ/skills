@@ -1,0 +1,42 @@
+[
+  {
+    "query": "帮我润色这份技术方案，重点检查黑话、过程断点和术语不一致",
+    "should_trigger": true
+  },
+  {
+    "query": "审阅 README 的信息结构，新同学能不能按步骤完成接入",
+    "should_trigger": true
+  },
+  {
+    "query": "比较这两个架构设计版本，判断哪个更容易评审和实施",
+    "should_trigger": true
+  },
+  {
+    "query": "把这段中文接口说明改得直接一些，但不要改变字段和状态语义",
+    "should_trigger": true
+  },
+  {
+    "query": "检查文档里的缩写、包装词和一词多义",
+    "should_trigger": true
+  },
+  {
+    "query": "帮我修复这个 TypeScript 单元测试",
+    "should_trigger": false
+  },
+  {
+    "query": "review 这个 MR 的逻辑错误和性能问题",
+    "should_trigger": false
+  },
+  {
+    "query": "写一份新功能 PRD，包含用户故事和验收标准",
+    "should_trigger": false
+  },
+  {
+    "query": "把这句话翻译成英文",
+    "should_trigger": false
+  },
+  {
+    "query": "查询 ttam.fe.metrics 的 P95 延迟",
+    "should_trigger": false
+  }
+]
