@@ -1,6 +1,6 @@
 # Behavior as Source：背景与技术方案
 
-本文是 `behavior-as-source` 技能的唯一背景与技术方案正文，面向产品、研发、测试和行为 Owner。它说明为什么采用行为事实源、如何执行，以及何时停止试点。技能操作入口仍为 [SKILL.md](../SKILL.md)。
+本文是 `behavior-as-source` 技能的唯一背景与技术方案正文，面向产品、研发、测试和行为 Owner。它说明为什么采用行为事实源、如何执行，以及何时停止试点。技能操作入口仍为 [SKILL.md](../../../../SKILL.md)。
 
 **方案状态：待验证的工程假设。** 当前目录提供技能说明、字段定义、模板和试点指标，不代表已经实现 Registry 服务、自动生成器、执行平台或发布系统。本文描述目标流程，不宣称已有端到端运行结果。
 
@@ -217,7 +217,7 @@ Property、独立隐藏验证和线上反馈能提供额外证据，但也需要
 
 ### 6.2 数据契约与唯一维护位置
 
-[JSON Schema](../schemas/behavior.schema.json) 是字段和枚举的机器契约，[字段说明](behavior-schema.md) 解释使用边界，[行为模板](../templates/behavior.md) 是创建条目的起点。本文解释用途，不另建一套 Schema。
+[JSON Schema](../../../../schemas/behavior.schema.json) 是字段和枚举的机器契约，[字段说明](../../../../references/behavior-schema.md) 解释使用边界，[行为模板](../../../../templates/behavior.md) 是创建条目的起点。本文解释用途，不另建一套 Schema。
 
 frontmatter 字段分为四组：
 
@@ -308,7 +308,7 @@ Owner 未确认，或 Driver、Oracle、Evidence 仍为 `TODO` 时，该条目�
 
 试点开始前，Owner 应确定比较范围、观察窗口、数据来源和“明显下降”“少量编辑”“快速恢复”的判定方式。原文没有给出统一数值阈值，本文不补造。
 
-[试点指标与晋级门槛](pilot-metrics.md) 维护具体指标。主要检查四个维度：
+[试点指标与晋级门槛](../../../../references/pilot-metrics.md) 维护具体指标。主要检查四个维度：
 
 - **同步成本：** 独立事实源数量、规则重复、不一致数量、人工同步时间；
 - **行为质量：** P0 / P1 遗漏、隐藏场景退化、错误 Oracle、重复行为、待决策停留时间；
@@ -337,14 +337,14 @@ Owner 未确认，或 Driver、Oracle、Evidence 仍为 `TODO` 时，该条目�
 
 ## 9. 当前技能材料的分工
 
-- [SKILL.md](../SKILL.md)：操作入口、执行顺序和不可改变的约束。
+- [SKILL.md](../../../../SKILL.md)：操作入口、执行顺序和不可改变的约束。
 - 本文：唯一背景、论证、技术流程和适用边界。
-- [JSON Schema](../schemas/behavior.schema.json)：字段、类型与状态枚举的机器契约。
-- [字段说明](behavior-schema.md)：字段用途与使用边界。
-- [行为模板](../templates/behavior.md)：创建条目的起点。
-- [项目接入指引](project-adoption.md)：在其他项目中完成首次最小试点。
-- [试点指标](pilot-metrics.md)：指标与扩大试点条件。
-- [CLI 文档](../README.md)：安装方式、命令、参数和输出示例。
+- [JSON Schema](../../../../schemas/behavior.schema.json)：字段、类型与状态枚举的机器契约。
+- [字段说明](../../../../references/behavior-schema.md)：字段用途与使用边界。
+- [行为模板](../../../../templates/behavior.md)：创建条目的起点。
+- [项目接入指引](../../../../references/project-adoption.md)：在其他项目中完成首次最小试点。
+- [试点指标](../../../../references/pilot-metrics.md)：指标与扩大试点条件。
+- [CLI 文档](../../../../README.md)：安装方式、命令、参数和输出示例。
 
 旧 YAML 模板和合并前的导航文档只保留在 Git 历史中，不作为当前事实源。
 
@@ -411,7 +411,7 @@ behavior-as-source/
     parse-lint.test.mjs
     diff.test.mjs
   references/
-    background-and-design.md
+    .agents/notes/implemented/architecture/2026-10-15-behavior-as-source-v2-background-and-design.md
     behavior-schema.md
     project-adoption.md
     pilot-metrics.md
@@ -420,7 +420,7 @@ behavior-as-source/
     behavior.md
 ```
 
-`README.md` 只记录 package 安装方式、五个命令、参数、退出码和代表性输出。Skill 工作流只写在 `SKILL.md`。`references/tooling.md` 只链接 `README.md`，不复制命令说明。
+`README.md` 只记录 package 安装方式、六个命令、参数、退出码和代表性输出。Skill 工作流只写在 `SKILL.md`。`references/tooling.md` 只链接 `README.md`，不复制命令说明。
 
 ### 10.4 事实源
 
@@ -430,7 +430,7 @@ behavior-as-source/
 | Agent 的操作顺序和晋级规则 | `SKILL.md` |
 | 空白条目结构 | `templates/behavior.md` |
 | CLI 参数和输出 | `README.md` |
-| 产品背景、反方论证和本实施计划 | `references/background-and-design.md` |
+| 产品背景、反方论证和本实施计划 | `.agents/notes/implemented/architecture/2026-10-15-behavior-as-source-v2-background-and-design.md` |
 | 消费项目的产品理由、证据和 Behavior | 消费项目自己的版本库 |
 
 `references/behavior-schema.md` 只解释字段用途并链接 JSON Schema。它不得复制完整字段表。当前背景文档是本产品的设计记录；消费项目 checked-in Skill 不复制本文，项目自己的采用理由放在项目文档中。
@@ -506,6 +506,8 @@ package 导出 `parseBehaviorSource`、`parseBehaviorFile`、`parseBehaviorDir`�
 
 所有命令支持 `--json`。已有 `--format json` 的命令将它视为同一输出模式，不建立两套 JSON 结构。
 
+Registry 成熟度报告由 `templates/registry-report.md` 约束 Agent 生成，不新增 CLI 或 JSON 契约。模板只报告 Registry 中可直接计算的成熟度；它不读取项目路线图，不推算产品完成度、剩余工时或日历时间。消费项目的阶段规则仍由该项目拥有。
+
 ### 10.8 第四阶段：更新 Skill
 
 工具契约稳定后再更新 Skill：
@@ -517,7 +519,7 @@ package 导出 `parseBehaviorSource`、`parseBehaviorFile`、`parseBehaviorDir`�
 - 新增 `references/tooling.md`；
 - `brief.md` 和 `full-argument.md` 若只承担旧导航，则删除，由 Git 历史追溯。
 
-`references/background-and-design.md` 保留在当前源码仓库，因为它是本产品的设计和实施计划。运行时 `SKILL.md` 不要求为日常任务读取本文。消费项目只 checked-in 操作所需的 Skill 文件，不复制本产品背景。
+`.agents/notes/implemented/architecture/2026-10-15-behavior-as-source-v2-background-and-design.md` 保留在当前源码仓库的 Agent Notes 中，因为它是本产品的设计和实施计划，不是 Skill 运行时参考。运行时 `SKILL.md` 不要求为日常任务读取本文。消费项目只 checked-in 操作所需的 Skill 文件，不复制本产品背景。
 
 ### 10.9 第五阶段：最小测试和本仓验收
 
