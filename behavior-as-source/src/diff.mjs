@@ -4,7 +4,31 @@ import path from "node:path";
 import { findRepositoryRoot, repositoryRelative } from "./fs.mjs";
 import { parseBehaviorSource } from "./parse.mjs";
 
-const COMPARED_FIELDS = ["status", "owner", "implementation", "introduced_in", "changed_in"];
+const COMPARED_FIELDS = [
+  "status",
+  "owner",
+  "introduced_in",
+  "changed_in",
+  "deprecated_in",
+  "actor",
+  "intent",
+  "implementation",
+  "driver",
+  "oracle",
+  "evidence",
+  "hidden_scenarios_ref",
+  "review_log",
+  "conflicts_with",
+];
+const GHERKIN_FIELDS = [
+  "scenario_keyword",
+  "scenario_name",
+  "scenario_description",
+  "scenario_tags",
+  "examples",
+  "data_tables",
+  "doc_strings",
+];
 
 function git(root, args) {
   return execFileSync("git", args, { cwd: root, encoding: "utf8", maxBuffer: 16 * 1024 * 1024 });
@@ -98,6 +122,14 @@ function rationale(file) {
   return section?.trim().replace(/\s+/g, " ") || "未提供理由";
 }
 
+function changedFields(before, after, fields) {
+  return fields.flatMap((field) =>
+    JSON.stringify(before?.[field]) === JSON.stringify(after?.[field])
+      ? []
+      : [{ field, before: before?.[field], after: after?.[field] }],
+  );
+}
+
 export function diffBehaviorRefs(refA, refB, root = process.cwd()) {
   const before = uniqueById(readRef(refA, path.resolve(root)), refA);
   const after = uniqueById(readRef(refB, path.resolve(root)), refB);
@@ -121,13 +153,17 @@ export function diffBehaviorRefs(refA, refB, root = process.cwd()) {
         reason: rationale(current),
       });
     }
-    const frontmatter = COMPARED_FIELDS.flatMap((field) =>
-      JSON.stringify(previous.meta[field]) === JSON.stringify(current.meta[field])
-        ? []
-        : [{ field, before: previous.meta[field], after: current.meta[field] }],
+    const frontmatter = changedFields(previous.meta, current.meta, COMPARED_FIELDS);
+    const content = changedFields(
+      { title: previous.title, rationale: rationale(previous) },
+      { title: current.title, rationale: rationale(current) },
+      ["title", "rationale"],
     );
+    const gherkin = changedFields(previous.gherkinSemantics, current.gherkinSemantics, GHERKIN_FIELDS);
     const steps = compareSteps(previous.steps, current.steps);
-    if (frontmatter.length || steps.length) result.modified.push({ id, title: current.title, frontmatter, steps });
+    if (frontmatter.length || content.length || gherkin.length || steps.length) {
+      result.modified.push({ id, title: current.title, frontmatter, content, gherkin, steps });
+    }
   }
   return result;
 }
@@ -146,6 +182,12 @@ export function renderBehaviorDiffMarkdown(result) {
     lines.push(`### ${item.id}`, "");
     for (const change of item.frontmatter) {
       lines.push(`- ${change.field}: ${inline(change.before)} → ${inline(change.after)}`);
+    }
+    for (const change of item.content) {
+      lines.push(`- ${change.field}: ${inline(change.before)} → ${inline(change.after)}`);
+    }
+    for (const change of item.gherkin) {
+      lines.push(`- Gherkin ${change.field}: ${inline(change.before)} → ${inline(change.after)}`);
     }
     for (const change of item.steps) {
       if (change.kind === "modified") {

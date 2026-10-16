@@ -35,6 +35,43 @@ function stepsFrom(document) {
   );
 }
 
+function tableRows(table) {
+  return table?.rows?.map((row) => row.cells.map((cell) => cell.value)) ?? [];
+}
+
+function gherkinSemanticsFrom(document) {
+  const scenario = scenarioNodes(document)[0];
+  if (!scenario) return undefined;
+  const steps = scenario.steps ?? [];
+  return {
+    scenario_keyword: scenario.keyword,
+    scenario_name: scenario.name,
+    scenario_description: scenario.description,
+    scenario_tags: (scenario.tags ?? []).map((tag) => tag.name),
+    examples: (scenario.examples ?? []).map((example) => ({
+      keyword: example.keyword,
+      name: example.name,
+      description: example.description,
+      tags: (example.tags ?? []).map((tag) => tag.name),
+      header: tableRows(example.tableHeader ? { rows: [example.tableHeader] } : undefined)[0] ?? [],
+      body: tableRows({ rows: example.tableBody ?? [] }),
+    })),
+    data_tables: steps.flatMap((step, index) =>
+      step.dataTable ? [{ step: index, rows: tableRows(step.dataTable) }] : [],
+    ),
+    doc_strings: steps.flatMap((step, index) =>
+      step.docString
+        ? [{
+            step: index,
+            media_type: step.docString.mediaType ?? null,
+            delimiter: step.docString.delimiter,
+            content: step.docString.content,
+          }]
+        : [],
+    ),
+  };
+}
+
 export function parseBehaviorSource(filePath, source, root = process.cwd()) {
   const rawFrontmatter = /^---[ \t]*\r?\n([\s\S]*?)\r?\n---[ \t]*(?:\r?\n|$)/.exec(source)?.[1] ?? "";
   let parsed = { data: {}, content: source, matter: "" };
@@ -62,6 +99,7 @@ export function parseBehaviorSource(filePath, source, root = process.cwd()) {
     meta: parsed.data,
     title,
     gherkin,
+    gherkinSemantics: gherkinSemanticsFrom(gherkin),
     steps: stepsFrom(gherkin),
     scenarioCount: scenarioNodes(gherkin).length,
     gherkinCount: blocks.length,

@@ -3,6 +3,7 @@ import path from "node:path";
 
 import { repositoryRelative } from "./fs.mjs";
 import { parseBehaviorDir, parseBehaviorFile } from "./parse.mjs";
+import { activeReadinessFailures } from "./readiness.mjs";
 
 function normalize(value) {
   return value.split(path.sep).join("/").replace(/^\.\//, "");
@@ -21,10 +22,18 @@ export function behaviorDetails(file) {
   return {
     id: file.meta.id,
     path: file.path,
+    title: file.title,
+    status: file.meta.status,
+    owner: file.meta.owner,
+    review_log: file.meta.review_log,
     implementation: file.meta.implementation,
     driver: file.meta.driver,
     oracle: file.meta.oracle,
+    evidence: file.meta.evidence,
     evidence_run_id: file.meta.evidence?.run_id,
+    evidence_applicability: file.meta.evidence?.result === "not_run" ? "not_available" : "unknown",
+    hidden_scenarios_ref: file.meta.hidden_scenarios_ref,
+    missing_for_active: activeReadinessFailures(file).map((failure) => failure.code),
   };
 }
 

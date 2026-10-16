@@ -1,6 +1,7 @@
 import path from "node:path";
 
 import { pathExists, repositoryRelative } from "./fs.mjs";
+import { activeReadinessFailures } from "./readiness.mjs";
 import { validateBehaviorMeta } from "./schema.mjs";
 
 const VAGUE_FILENAMES = new Set(["test", "a", "new", "tmp", "xxx", "foo"]);
@@ -13,25 +14,6 @@ function issue(file, rule, severity, message, line) {
     message,
     ...(line ? { line } : {}),
   };
-}
-
-function activeGateFailures(file) {
-  const { meta } = file;
-  if (meta.status !== "active") return [];
-  const failures = [];
-  if (meta.owner === "TODO") failures.push("owner must not be TODO");
-  if (!Array.isArray(meta.implementation) || meta.implementation.length === 0) {
-    failures.push("implementation must contain at least one path");
-  }
-  if (meta.evidence?.result !== "passed") failures.push("evidence.result must be passed");
-  if (!pathExists(file.root, meta.evidence?.run_id)) failures.push("evidence.run_id must point to an existing file");
-  if (!meta.hidden_scenarios_ref || meta.hidden_scenarios_ref === "TODO") {
-    failures.push("hidden_scenarios_ref must not be TODO");
-  }
-  if (Array.isArray(meta.conflicts_with) && meta.conflicts_with.length > 0) {
-    failures.push("active behavior must not declare conflicts_with");
-  }
-  return failures;
 }
 
 export function lintBehavior(file) {
@@ -64,9 +46,9 @@ export function lintBehavior(file) {
     }
   }
 
-  const gateFailures = activeGateFailures(file);
+  const gateFailures = file.meta.status === "active" ? activeReadinessFailures(file) : [];
   if (gateFailures.length) {
-    issues.push(issue(file, "active-gate", "error", gateFailures.join("; ")));
+    issues.push(issue(file, "active-gate", "error", gateFailures.map((failure) => failure.message).join("; ")));
   }
 
   if (file.meta.evidence?.result === "passed" && !pathExists(file.root, file.meta.evidence.run_id)) {

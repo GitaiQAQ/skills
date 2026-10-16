@@ -1,6 +1,6 @@
 {
   "name": "@flome/behavior-as-source",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Versioned Markdown and Gherkin behavior registry Skill and CLI.",
   "type": "module",
   "license": "UNLICENSED",
@@ -9,12 +9,14 @@
     "behavior-diff": "scripts/behavior-diff.mjs",
     "behavior-impact": "scripts/behavior-impact.mjs",
     "behavior-list": "scripts/behavior-list.mjs",
-    "behavior-locate": "scripts/behavior-locate.mjs"
+    "behavior-locate": "scripts/behavior-locate.mjs",
+    "behavior-review": "scripts/behavior-review.mjs"
   },
   "exports": {
     ".": "./src/index.mjs"
   },
   "files": [
+    "evidence",
     "README.md",
     "SKILL.md",
     "agents",
@@ -25,7 +27,9 @@
     "templates"
   ],
   "scripts": {
-    "test": "node --test tests/*.test.mjs",
+    "test": "npm run self-check",
+    "self-check": "npm run behavior-lint -- . && npm run test:unit",
+    "test:unit": "node --test tests/*.test.mjs",
     "behavior-lint": "node scripts/behavior-lint.mjs",
     "behavior-diff": "node scripts/behavior-diff.mjs",
     "behavior-impact": "node scripts/behavior-impact.mjs",
