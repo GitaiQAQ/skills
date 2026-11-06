@@ -1,6 +1,6 @@
 # SOURCES 溯源清单
 
-`notes/sources/` 下所有一手材料的来源、抓取方式与保真度说明。合并笔记见上级目录 `agent-governance-merged-notes.md`。
+`assets/2026-11-06-agent-governance-merged-notes/` 下所有一手材料的来源、抓取方式与保真度说明。合并笔记见 `../../2026-11-06-agent-governance-merged-notes.md`。
 抓取日期统一为 **2026-11-06**。给下游 agent 消费前请先读本文件。
 
 ## 备份文件一览

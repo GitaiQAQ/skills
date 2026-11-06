@@ -454,17 +454,17 @@ OPS 周五收据：每个例程的 runs/passed/cost + 一个问题——**「明
 
 ## 8. 原始来源
 
-**全部一手材料已备份到本地 `notes/sources/`**（溯源清单见 `notes/sources/MANIFEST.md`，含抓取方式、commit 号、保真度说明和未备份项列表），可直接交给其他 agent 消费。
+**全部一手材料已备份到本地 `assets/2026-11-06-agent-governance-merged-notes/`**（溯源清单见 `assets/2026-11-06-agent-governance-merged-notes/MANIFEST.md`，含抓取方式、commit 号、保真度说明和未备份项列表），可直接交给其他 agent 消费。
 
 | 材料 | 本地备份 | 原始链接 |
 |---|---|---|
-| Bend GUIDE.md 等仓库摘录 | `sources/bend-repo-excerpt/`（GUIDE/AGENTS/gates/evals/LAWS-PROOF 样例） | github.com/HigherOrderCO/Bend，commit 222de99 |
-| Bend 官网定位 | `sources/bend-lang-website.txt` | bend-lang.com |
-| Grok Bot 单兵 harness | `sources/x-beamnxw-one-person-company-harness.md` | x.com/beamnxw/status/2107143806546002398（2026-10-06） |
-| Grok Bot 团队 | `sources/x-smerkzz-agent-team-from-scratch.md` | x.com/0xsmerkzz/status/2118073227826147530 |
-| Grok Bot 经济学 | `sources/x-m4lkxx-6-bots-smaller-bill.md`（引用 Lingxi Li、Lauren Tan、Kevin Niparko 直播/论坛数据） | x.com/m4lkxx/status/2115775972536434946（2026-10-29） |
-| Claude Code Advisor | `sources/claude-code-advisor.md`（实验性；动机博客未备份） | code.claude.com/docs/en/advisor |
-| Claude Code Agent Teams | `sources/claude-code-agent-teams.md`（实验性） | code.claude.com/docs/en/agent-teams |
-| Agent Teams hype 核查 | `sources/x-mirku21-agent-teams-tweet.md`（⚠️ 含 JEV/340 tok/s 等无出处内容，头部有逐条核查结论） | x.com/mirku21/status/2115911644501147972 |
+| Bend GUIDE.md 等仓库摘录 | `assets/2026-11-06-agent-governance-merged-notes/bend-repo-excerpt/`（GUIDE/AGENTS/gates/evals/LAWS-PROOF 样例） | github.com/HigherOrderCO/Bend，commit 222de99 |
+| Bend 官网定位 | `assets/2026-11-06-agent-governance-merged-notes/bend-lang-website.txt` | bend-lang.com |
+| Grok Bot 单兵 harness | `assets/2026-11-06-agent-governance-merged-notes/x-beamnxw-one-person-company-harness.md` | x.com/beamnxw/status/2107143806546002398（2026-10-06） |
+| Grok Bot 团队 | `assets/2026-11-06-agent-governance-merged-notes/x-smerkzz-agent-team-from-scratch.md` | x.com/0xsmerkzz/status/2118073227826147530 |
+| Grok Bot 经济学 | `assets/2026-11-06-agent-governance-merged-notes/x-m4lkxx-6-bots-smaller-bill.md`（引用 Lingxi Li、Lauren Tan、Kevin Niparko 直播/论坛数据） | x.com/m4lkxx/status/2115775972536434946（2026-10-29） |
+| Claude Code Advisor | `assets/2026-11-06-agent-governance-merged-notes/claude-code-advisor.md`（实验性；动机博客未备份） | code.claude.com/docs/en/advisor |
+| Claude Code Agent Teams | `assets/2026-11-06-agent-governance-merged-notes/claude-code-agent-teams.md`（实验性） | code.claude.com/docs/en/agent-teams |
+| Agent Teams hype 核查 | `assets/2026-11-06-agent-governance-merged-notes/x-mirku21-agent-teams-tweet.md`（⚠️ 含 JEV/340 tok/s 等无出处内容，头部有逐条核查结论） | x.com/mirku21/status/2115911644501147972 |
 
 二手引用（未备份，见 MANIFEST）：The advisor strategy 博客（claude.com/blog/the-advisor-strategy）、Lingxi Li《Grok Bot for Engineering》（x.com/lingxi，Jenny 原始出处）。

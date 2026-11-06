@@ -24,3 +24,7 @@ Lifecycle 使用 `proposed`、`implemented`、`rejected`、`archived`。Class �
 
 - [`implemented/architecture/2026-10-15-behavior-as-source-v2-background-and-design.md`](implemented/architecture/2026-10-15-behavior-as-source-v2-background-and-design.md) —— Behavior as Source v2 的产品背景、架构和实施记录。
 - [`proposed/process/2026-10-16-behavior-review-and-living-documentation.md`](proposed/process/2026-10-16-behavior-review-and-living-documentation.md) —— Behavior as Source 的查询、开发、review、状态解释和 Living Documentation 交互策略。
+
+## 研究材料
+
+- [`implemented/process/2026-11-06-agent-governance-merged-notes.md`](implemented/process/2026-11-06-agent-governance-merged-notes.md) —— AI 时代治理结构的六份一手材料合并学习笔记；来源清单见 [`assets/2026-11-06-agent-governance-merged-notes/MANIFEST.md`](implemented/process/assets/2026-11-06-agent-governance-merged-notes/MANIFEST.md)。
